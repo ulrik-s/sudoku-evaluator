@@ -12,8 +12,9 @@ impl Strategy for YWing {
     }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
-        if crate::board::row_indices()
-            .flat_map(|r| crate::board::col_indices().map(move |c| (r, c)))
+        let cells: Vec<_> = board.unsolved_cells().collect();
+        if cells
+            .into_iter()
             .find_map(|(r, c)| {
                 let pivot = board.candidates(r, c);
                 if pivot.len() != PAIR_LEN {

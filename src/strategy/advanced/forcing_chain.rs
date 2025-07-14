@@ -12,23 +12,15 @@ impl Strategy for ForcingChain {
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         let mut target = None;
         let mut best_len = 10;
-        for r in board::row_indices() {
-            for c in board::col_indices() {
-                if board.get(r, c).is_some() {
-                    continue;
+        for (r, c) in board.unsolved_cells() {
+            let cands = board.candidates(r, c);
+            let len = cands.len();
+            if len > 1 && len < best_len {
+                best_len = len;
+                target = Some((r, c, cands));
+                if len == 2 {
+                    break;
                 }
-                let cands = board.candidates(r, c);
-                let len = cands.len();
-                if len > 1 && len < best_len {
-                    best_len = len;
-                    target = Some((r, c, cands));
-                    if len == 2 {
-                        break;
-                    }
-                }
-            }
-            if best_len == 2 {
-                break;
             }
         }
 

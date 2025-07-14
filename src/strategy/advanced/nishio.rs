@@ -10,25 +10,21 @@ impl Strategy for Nishio {
     }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
-        for r in board::row_indices() {
-            for c in board::col_indices() {
-                if board.get(r, c).is_some() {
-                    continue;
-                }
-                let cands = board.candidates(r, c);
-                if cands.len() <= 1 || cands.len() > 4 {
-                    continue;
-                }
-                for d in cands.iter() {
-                    let mut trial = board.clone();
-                    trial.set(r, c, d);
-                    let solver = Solver::without_nishio_and_forcing_chain();
-                    if solver.solve(&mut trial).is_err() {
-                        match board.eliminate_candidate(r, c, d) {
-                            Some(true) => return Ok(true),
-                            Some(false) => {}
-                            None => return Err(SolverError::Contradiction { row: r, col: c }),
-                        }
+        let cells: Vec<_> = board.unsolved_cells().collect();
+        for (r, c) in cells {
+            let cands = board.candidates(r, c);
+            if cands.len() <= 1 || cands.len() > 4 {
+                continue;
+            }
+            for d in cands.iter() {
+                let mut trial = board.clone();
+                trial.set(r, c, d);
+                let solver = Solver::without_nishio_and_forcing_chain();
+                if solver.solve(&mut trial).is_err() {
+                    match board.eliminate_candidate(r, c, d) {
+                        Some(true) => return Ok(true),
+                        Some(false) => {}
+                        None => return Err(SolverError::Contradiction { row: r, col: c }),
                     }
                 }
             }
