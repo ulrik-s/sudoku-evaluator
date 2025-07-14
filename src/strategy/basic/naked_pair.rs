@@ -1,0 +1,54 @@
+use crate::strategy::{Strategy, StrategyKind};
+use crate::board::{Board, CandidateSet, Unit};
+use crate::SolverError;
+
+pub struct NakedPair;
+
+impl Strategy for NakedPair {
+    fn kind(&self) -> StrategyKind { StrategyKind::NakedPair }
+
+    fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
+        for unit in Unit::all() {
+            if search_unit(board, unit)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+}
+
+fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
+    let cells: Vec<((usize, usize), CandidateSet)> = board
+        .unit_iter(unit)
+        .filter(|&(r, c)| board.get(r, c).is_none())
+        .map(|(r, c)| ((r, c), board.candidates(r, c)))
+        .filter(|(_, cand)| cand.len() == 2)
+        .collect();
+
+    for i in 0..cells.len() {
+        for j in i + 1..cells.len() {
+            if cells[i].1 == cells[j].1 {
+                let digits = cells[i].1;
+                let mut changed = false;
+                for (rr, cc) in board.unit_iter(unit) {
+                    if (rr, cc) != cells[i].0 && (rr, cc) != cells[j].0 {
+                        if board.get(rr, cc).is_none() {
+                            for d in &digits {
+                                match board.eliminate_candidate(rr, cc, d) {
+                                    Some(true) => changed = true,
+                                    None => return Err(SolverError::Contradiction { row: rr, col: cc }),
+                                    _ => {}
+                                }
+                            }
+                        }
+                    }
+                }
+                if changed {
+                    return Ok(true);
+                }
+            }
+        }
+    }
+    Ok(false)
+}
+
