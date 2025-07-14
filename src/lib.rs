@@ -96,6 +96,7 @@ impl Default for Solver {
             Box::new(strategy::box_line_reduction::BoxLineReduction),
             Box::new(strategy::x_wing::XWing),
             Box::new(strategy::y_wing::YWing),
+            Box::new(strategy::swordfish::Swordfish),
         ])
     }
 }

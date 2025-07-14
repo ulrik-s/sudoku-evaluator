@@ -32,10 +32,11 @@ fn kind_to_strategy(kind: StrategyKind) -> Box<dyn Strategy> {
         }
         StrategyKind::XWing => Box::new(sudoku_evaluator::strategy::x_wing::XWing),
         StrategyKind::YWing => Box::new(sudoku_evaluator::strategy::y_wing::YWing),
+        StrategyKind::Swordfish => Box::new(sudoku_evaluator::strategy::swordfish::Swordfish),
     }
 }
 
-const ALL_KINDS: [StrategyKind; 12] = [
+const ALL_KINDS: [StrategyKind; 13] = [
     StrategyKind::SingleCandidate,
     StrategyKind::HiddenSingle,
     StrategyKind::NakedPair,
@@ -48,6 +49,7 @@ const ALL_KINDS: [StrategyKind; 12] = [
     StrategyKind::BoxLineReduction,
     StrategyKind::XWing,
     StrategyKind::YWing,
+    StrategyKind::Swordfish,
 ];
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

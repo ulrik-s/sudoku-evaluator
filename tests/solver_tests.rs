@@ -237,3 +237,20 @@ fn pointing_pair_strategy() {
         }
     }
 }
+
+#[test]
+fn swordfish_strategy() {
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
+    for r in 0..3 {
+        for c in 3..9 {
+            board.eliminate_candidate(r, c, 1);
+        }
+    }
+    let strat = sudoku_evaluator::strategy::swordfish::Swordfish;
+    assert!(strat.apply(&mut board).unwrap());
+    for r in 3..9 {
+        for c in 0..3 {
+            assert!(!board.candidates(r, c).contains(1));
+        }
+    }
+}

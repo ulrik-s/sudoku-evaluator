@@ -15,6 +15,7 @@ pub mod basic {
 }
 
 pub mod advanced {
+    pub mod swordfish;
     pub mod x_wing;
     pub mod y_wing;
 }
@@ -36,6 +37,7 @@ pub enum StrategyKind {
     BoxLineReduction,
     XWing,
     YWing,
+    Swordfish,
 }
 
 pub trait Strategy {
