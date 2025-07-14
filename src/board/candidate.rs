@@ -65,7 +65,7 @@ impl IntoIterator for CandidateSet {
     }
 }
 
-impl<'a> IntoIterator for &'a CandidateSet {
+impl IntoIterator for &CandidateSet {
     type Item = Digit;
     type IntoIter = CandidateIter;
     fn into_iter(self) -> Self::IntoIter {
@@ -105,8 +105,17 @@ impl CandidatePositions {
     pub fn len(&self) -> usize {
         self.len
     }
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
     pub fn iter(&self) -> impl Iterator<Item = usize> + '_ {
         self.positions[..self.len].iter().copied()
+    }
+}
+
+impl Default for CandidatePositions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -138,8 +147,17 @@ impl CandidateCoords {
     pub fn len(&self) -> usize {
         self.len
     }
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
     pub fn iter(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
         self.coords[..self.len].iter().copied()
+    }
+}
+
+impl Default for CandidateCoords {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

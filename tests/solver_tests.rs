@@ -8,7 +8,7 @@ use sudoku_evaluator::{
 fn already_solved() {
     let puzzle =
         "534678912672195348198342567859761423426853791713924856961537284287419635345286179";
-    let mut board = Board::from_str(puzzle).unwrap();
+    let mut board = Board::parse(puzzle).unwrap();
     let solver = Solver::default();
     let used = solver.solve(&mut board).unwrap();
     assert!(used.is_empty());
@@ -18,7 +18,7 @@ fn already_solved() {
 fn single_candidate_only() {
     let puzzle =
         "53467891267219534819834256785976142342685379171392485696153728428741963534528617.";
-    let mut board = Board::from_str(puzzle).unwrap();
+    let mut board = Board::parse(puzzle).unwrap();
     let solver = Solver::default();
     let used = solver.solve(&mut board).unwrap();
     assert_eq!(used, vec![StrategyKind::SingleCandidate]);
@@ -28,7 +28,7 @@ fn single_candidate_only() {
 #[test]
 fn invalid_board() {
     let puzzle = format!("11{}", ".".repeat(79)); // duplicate 1 in row
-    let mut board = Board::from_str(&puzzle).unwrap();
+    let mut board = Board::parse(&puzzle).unwrap();
     let solver = Solver::default();
     let err = solver.solve(&mut board).unwrap_err();
     assert!(matches!(err, sudoku_evaluator::SolverError::InvalidBoard));
@@ -38,7 +38,7 @@ fn invalid_board() {
 fn solve_easy_puzzle() {
     let puzzle =
         "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
-    let mut board = Board::from_str(puzzle).unwrap();
+    let mut board = Board::parse(puzzle).unwrap();
     let solver = Solver::default();
     let used = solver.solve(&mut board).unwrap();
     assert!(board.is_solved());
@@ -49,7 +49,7 @@ fn solve_easy_puzzle() {
 fn solve_harder_puzzle() {
     let puzzle =
         "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
-    let mut board = Board::from_str(puzzle).unwrap();
+    let mut board = Board::parse(puzzle).unwrap();
     let solver = Solver::default();
     let used = solver.solve(&mut board).unwrap();
     assert!(board.is_solved());
@@ -58,7 +58,7 @@ fn solve_harder_puzzle() {
 
 #[test]
 fn naked_pair_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     // setup row 0 naked pair in c0 and c1, candidate {1,2}
     for d in 3..=9 {
         board.eliminate_candidate(0, 0, d);
@@ -75,7 +75,7 @@ fn naked_pair_strategy() {
 
 #[test]
 fn box_line_reduction_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     // in box (0,0), digit 1 only appears in row 0
     for d in 3..=9 {
         board.eliminate_candidate(0, 0, d);
@@ -102,7 +102,7 @@ fn box_line_reduction_strategy() {
 fn solve_very_hard_puzzle() {
     let puzzle =
         "..467.....7..9...8.9..4.5.7.5...1.234.6..37...........9...372.4.8.4.9.3...5.8...9";
-    let mut board = Board::from_str(puzzle).unwrap();
+    let mut board = Board::parse(puzzle).unwrap();
     let solver = Solver::default();
     let used = solver.solve(&mut board).unwrap();
     assert!(board.is_solved());
@@ -111,7 +111,7 @@ fn solve_very_hard_puzzle() {
 
 #[test]
 fn x_wing_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     for r in 0..2 {
         for c in 0..9 {
             if c != 0 && c != 2 {
@@ -129,7 +129,7 @@ fn x_wing_strategy() {
 
 #[test]
 fn y_wing_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     for d in 1..=9 {
         if d != 1 && d != 2 {
             board.eliminate_candidate(0, 0, d);
@@ -151,7 +151,7 @@ fn y_wing_strategy() {
 
 #[test]
 fn hidden_pair_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     for c in 0..9 {
         for d in 1..=9 {
             if c == 0 || c == 1 {
@@ -176,7 +176,7 @@ fn hidden_pair_strategy() {
 
 #[test]
 fn naked_triple_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     for c in 0..3 {
         for d in 4..=9 {
             board.eliminate_candidate(0, c, d);
@@ -192,7 +192,7 @@ fn naked_triple_strategy() {
 
 #[test]
 fn hidden_triple_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     for c in 3..9 {
         board.eliminate_candidate(0, c, 1);
         board.eliminate_candidate(0, c, 2);
@@ -220,7 +220,7 @@ fn hidden_triple_strategy() {
 
 #[test]
 fn pointing_pair_strategy() {
-    let mut board = Board::from_str(&".".repeat(81)).unwrap();
+    let mut board = Board::parse(&".".repeat(81)).unwrap();
     // digit 1 only in cells (0,0) and (0,1) of box 0
     for r in 0..3 {
         for c in 0..3 {

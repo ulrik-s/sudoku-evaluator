@@ -44,9 +44,9 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
                     }
                 }
                 if union.len() == 3
-                    && positions[d1 as usize].len() >= 1
-                    && positions[d2 as usize].len() >= 1
-                    && positions[d3 as usize].len() >= 1
+                    && !positions[d1 as usize].is_empty()
+                    && !positions[d2 as usize].is_empty()
+                    && !positions[d3 as usize].is_empty()
                 {
                     let mut changed = false;
                     for &(r, c) in &union {

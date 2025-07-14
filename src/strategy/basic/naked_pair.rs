@@ -33,16 +33,17 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
                 let digits = cells[i].1;
                 let mut changed = false;
                 for (rr, cc) in board.unit_iter(unit) {
-                    if (rr, cc) != cells[i].0 && (rr, cc) != cells[j].0 {
-                        if board.get(rr, cc).is_none() {
-                            for d in &digits {
-                                match board.eliminate_candidate(rr, cc, d) {
-                                    Some(true) => changed = true,
-                                    None => {
-                                        return Err(SolverError::Contradiction { row: rr, col: cc });
-                                    }
-                                    _ => {}
+                    if (rr, cc) != cells[i].0
+                        && (rr, cc) != cells[j].0
+                        && board.get(rr, cc).is_none()
+                    {
+                        for d in &digits {
+                            match board.eliminate_candidate(rr, cc, d) {
+                                Some(true) => changed = true,
+                                None => {
+                                    return Err(SolverError::Contradiction { row: rr, col: cc });
                                 }
+                                _ => {}
                             }
                         }
                     }

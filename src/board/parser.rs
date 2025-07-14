@@ -1,4 +1,4 @@
-use super::{Digit, board::Board};
+use super::{Digit, grid::Board};
 use std::fmt;
 
 /// Errors that can occur while parsing a puzzle string into a [`Board`].
@@ -24,17 +24,17 @@ impl fmt::Display for BoardError {
 impl std::error::Error for BoardError {}
 
 impl Board {
-    pub fn from_str(puzzle: &str) -> Result<Self, BoardError> {
+    pub fn parse(puzzle: &str) -> Result<Self, BoardError> {
         if puzzle.len() != 81 {
             return Err(BoardError::InvalidLength(puzzle.len()));
         }
-        let mut cells = [[super::board::Cell::new(None); 9]; 9];
+        let mut cells = [[super::grid::Cell::new(None); 9]; 9];
         puzzle.chars().enumerate().try_for_each(|(idx, ch)| {
             let r = idx / 9;
             let c = idx % 9;
             cells[r][c] = match ch {
-                '1'..='9' => super::board::Cell::new(Some(ch.to_digit(10).unwrap() as Digit)),
-                '.' | '0' => super::board::Cell::new(None),
+                '1'..='9' => super::grid::Cell::new(Some(ch.to_digit(10).unwrap() as Digit)),
+                '.' | '0' => super::grid::Cell::new(None),
                 _ => return Err(BoardError::InvalidChar(ch, idx)),
             };
             Ok::<_, BoardError>(())
@@ -52,5 +52,13 @@ impl Board {
 
     pub fn is_solved(&self) -> bool {
         self.cells().all(|(r, c)| self.get(r, c).is_some()) && self.is_valid()
+    }
+}
+
+impl std::str::FromStr for Board {
+    type Err = BoardError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::parse(s)
     }
 }

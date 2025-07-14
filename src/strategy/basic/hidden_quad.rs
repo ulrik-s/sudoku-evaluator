@@ -125,7 +125,7 @@ where
                     let pos2 = &positions[d2 as usize];
                     let pos3 = &positions[d3 as usize];
                     let pos4 = &positions[d4 as usize];
-                    let mut union: Vec<usize> = pos1.iter().copied().collect();
+                    let mut union = pos1.to_vec();
                     for &p in pos2 {
                         if !union.contains(&p) {
                             union.push(p);

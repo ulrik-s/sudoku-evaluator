@@ -29,7 +29,6 @@ impl Strategy for XWing {
                                 None => Err(SolverError::Contradiction { row: r, col: c }),
                             }
                         })
-                        .map(|changed| changed)
                 })
             })
             .transpose()?
@@ -55,7 +54,6 @@ impl Strategy for XWing {
                                 None => Err(SolverError::Contradiction { row: r, col: c }),
                             }
                         })
-                        .map(|changed| changed)
                 })
             })
             .transpose()?

@@ -14,6 +14,22 @@ impl Unit {
             .chain((0..9).map(Unit::Col))
             .chain((0..3).flat_map(|r| (0..3).map(move |c| Unit::Box(r * 3, c * 3))))
     }
+
+    /// Iterator over all box units.
+    pub fn boxes() -> impl Iterator<Item = Unit> {
+        super::box_indices().map(|(r, c)| Unit::Box(r, c))
+    }
+
+    /// Check whether the given coordinate belongs to this unit.
+    pub fn contains(&self, r: usize, c: usize) -> bool {
+        match *self {
+            Unit::Row(row) => row == r,
+            Unit::Col(col) => col == c,
+            Unit::Box(br, bc) => {
+                r >= br && r < br + super::BOX_SIZE && c >= bc && c < bc + super::BOX_SIZE
+            }
+        }
+    }
 }
 
 pub struct UnitIter {
