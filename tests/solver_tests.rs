@@ -57,6 +57,26 @@ fn solve_harder_puzzle() {
 }
 
 #[test]
+fn solve_new_puzzle() {
+    let puzzle =
+        "000982000035100870800300059090015000002000600000620040900201003013006520000700000";
+    let mut board = Board::parse(puzzle).unwrap();
+    let solver = Solver::default();
+    let err = solver.solve(&mut board).unwrap_err();
+    assert!(matches!(err, sudoku_evaluator::SolverError::Unsolvable));
+}
+
+#[test]
+fn solve_added_puzzle() {
+    let puzzle =
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080000";
+    let mut board = Board::parse(puzzle).unwrap();
+    let solver = Solver::default();
+    let err = solver.solve(&mut board).unwrap_err();
+    assert!(matches!(err, sudoku_evaluator::SolverError::Unsolvable));
+}
+
+#[test]
 fn naked_pair_strategy() {
     let mut board = Board::parse(&".".repeat(81)).unwrap();
     // setup row 0 naked pair in c0 and c1, candidate {1,2}

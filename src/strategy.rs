@@ -15,8 +15,17 @@ pub mod basic {
 }
 
 pub mod advanced {
+    pub mod bug;
+    pub mod forcing_chain;
+    pub mod jellyfish;
+    pub mod nishio;
+    pub mod simple_coloring;
     pub mod swordfish;
+    pub mod unique_rectangle;
     pub mod x_wing;
+    pub mod xy_chain;
+    pub mod xy_wing;
+    pub mod xyz_wing;
     pub mod y_wing;
 }
 
@@ -37,7 +46,16 @@ pub enum StrategyKind {
     BoxLineReduction,
     XWing,
     YWing,
+    XYZWing,
+    XYWing,
+    XYChain,
+    SimpleColoring,
+    Jellyfish,
+    UniqueRectangle,
     Swordfish,
+    Bug,
+    ForcingChain,
+    Nishio,
 }
 
 pub trait Strategy {
