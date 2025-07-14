@@ -31,12 +31,20 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
         for j in i + 1..cells.len() {
             if cells[i].1 == cells[j].1 {
                 let digits = cells[i].1;
+                // ensure this pair occurs exactly in two cells
+                if cells.iter().filter(|c| c.1 == digits).count() != 2 {
+                    continue;
+                }
                 let mut changed = false;
                 for (rr, cc) in board.unit_iter(unit) {
                     if (rr, cc) != cells[i].0
                         && (rr, cc) != cells[j].0
                         && board.get(rr, cc).is_none()
                     {
+                        let cell_cands = board.candidates(rr, cc);
+                        if cell_cands.len() == digits.len() && cell_cands == digits {
+                            continue;
+                        }
                         for d in &digits {
                             match board.eliminate_candidate(rr, cc, d) {
                                 Some(true) => changed = true,

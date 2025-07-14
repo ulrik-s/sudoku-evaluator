@@ -33,10 +33,25 @@ fn kind_to_strategy(kind: StrategyKind) -> Box<dyn Strategy> {
         StrategyKind::XWing => Box::new(sudoku_evaluator::strategy::x_wing::XWing),
         StrategyKind::YWing => Box::new(sudoku_evaluator::strategy::y_wing::YWing),
         StrategyKind::Swordfish => Box::new(sudoku_evaluator::strategy::swordfish::Swordfish),
+        StrategyKind::Jellyfish => Box::new(sudoku_evaluator::strategy::jellyfish::Jellyfish),
+        StrategyKind::UniqueRectangle => {
+            Box::new(sudoku_evaluator::strategy::unique_rectangle::UniqueRectangle)
+        }
+        StrategyKind::XYZWing => Box::new(sudoku_evaluator::strategy::xyz_wing::XYZWing),
+        StrategyKind::XYChain => Box::new(sudoku_evaluator::strategy::xy_chain::XYChain),
+        StrategyKind::XYWing => Box::new(sudoku_evaluator::strategy::xy_wing::XYWing),
+        StrategyKind::SimpleColoring => {
+            Box::new(sudoku_evaluator::strategy::simple_coloring::SimpleColoring)
+        }
+        StrategyKind::Bug => Box::new(sudoku_evaluator::strategy::bug::Bug),
+        StrategyKind::ForcingChain => {
+            Box::new(sudoku_evaluator::strategy::forcing_chain::ForcingChain)
+        }
+        StrategyKind::Nishio => Box::new(sudoku_evaluator::strategy::nishio::Nishio),
     }
 }
 
-const ALL_KINDS: [StrategyKind; 13] = [
+const ALL_KINDS: [StrategyKind; 22] = [
     StrategyKind::SingleCandidate,
     StrategyKind::HiddenSingle,
     StrategyKind::NakedPair,
@@ -50,6 +65,15 @@ const ALL_KINDS: [StrategyKind; 13] = [
     StrategyKind::XWing,
     StrategyKind::YWing,
     StrategyKind::Swordfish,
+    StrategyKind::Jellyfish,
+    StrategyKind::UniqueRectangle,
+    StrategyKind::XYZWing,
+    StrategyKind::XYChain,
+    StrategyKind::XYWing,
+    StrategyKind::SimpleColoring,
+    StrategyKind::Bug,
+    StrategyKind::ForcingChain,
+    StrategyKind::Nishio,
 ];
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

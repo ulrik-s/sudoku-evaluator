@@ -52,6 +52,56 @@ impl Solver {
         Self::default()
     }
 
+    pub fn without_nishio() -> Self {
+        Self::new(vec![
+            Box::new(strategy::single_candidate::SingleCandidate),
+            Box::new(strategy::hidden_single::HiddenSingle),
+            Box::new(strategy::naked_pair::NakedPair),
+            Box::new(strategy::naked_triple::NakedTriple),
+            Box::new(strategy::naked_quad::NakedQuad),
+            Box::new(strategy::hidden_pair::HiddenPair),
+            Box::new(strategy::hidden_triple::HiddenTriple),
+            Box::new(strategy::hidden_quad::HiddenQuad),
+            Box::new(strategy::pointing_pair::PointingPair),
+            Box::new(strategy::box_line_reduction::BoxLineReduction),
+            Box::new(strategy::x_wing::XWing),
+            Box::new(strategy::y_wing::YWing),
+            Box::new(strategy::xyz_wing::XYZWing),
+            Box::new(strategy::xy_wing::XYWing),
+            Box::new(strategy::xy_chain::XYChain),
+            Box::new(strategy::simple_coloring::SimpleColoring),
+            Box::new(strategy::jellyfish::Jellyfish),
+            Box::new(strategy::unique_rectangle::UniqueRectangle),
+            Box::new(strategy::swordfish::Swordfish),
+            Box::new(strategy::bug::Bug),
+        ])
+    }
+
+    pub fn without_nishio_and_forcing_chain() -> Self {
+        Self::new(vec![
+            Box::new(strategy::single_candidate::SingleCandidate),
+            Box::new(strategy::hidden_single::HiddenSingle),
+            Box::new(strategy::naked_pair::NakedPair),
+            Box::new(strategy::naked_triple::NakedTriple),
+            Box::new(strategy::naked_quad::NakedQuad),
+            Box::new(strategy::hidden_pair::HiddenPair),
+            Box::new(strategy::hidden_triple::HiddenTriple),
+            Box::new(strategy::hidden_quad::HiddenQuad),
+            Box::new(strategy::pointing_pair::PointingPair),
+            Box::new(strategy::box_line_reduction::BoxLineReduction),
+            Box::new(strategy::x_wing::XWing),
+            Box::new(strategy::y_wing::YWing),
+            Box::new(strategy::xyz_wing::XYZWing),
+            Box::new(strategy::xy_wing::XYWing),
+            Box::new(strategy::xy_chain::XYChain),
+            Box::new(strategy::simple_coloring::SimpleColoring),
+            Box::new(strategy::jellyfish::Jellyfish),
+            Box::new(strategy::unique_rectangle::UniqueRectangle),
+            Box::new(strategy::swordfish::Swordfish),
+            Box::new(strategy::bug::Bug),
+        ])
+    }
+
     pub fn solve(&self, board: &mut Board) -> Result<Vec<StrategyKind>, SolverError> {
         if !board.is_valid() {
             return Err(SolverError::InvalidBoard);
@@ -96,7 +146,16 @@ impl Default for Solver {
             Box::new(strategy::box_line_reduction::BoxLineReduction),
             Box::new(strategy::x_wing::XWing),
             Box::new(strategy::y_wing::YWing),
+            Box::new(strategy::xyz_wing::XYZWing),
+            Box::new(strategy::xy_wing::XYWing),
+            Box::new(strategy::xy_chain::XYChain),
+            Box::new(strategy::simple_coloring::SimpleColoring),
+            Box::new(strategy::jellyfish::Jellyfish),
+            Box::new(strategy::unique_rectangle::UniqueRectangle),
             Box::new(strategy::swordfish::Swordfish),
+            Box::new(strategy::bug::Bug),
+            Box::new(strategy::forcing_chain::ForcingChain),
+            Box::new(strategy::nishio::Nishio),
         ])
     }
 }
