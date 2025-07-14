@@ -11,20 +11,16 @@ impl Strategy for Bug {
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         let mut multi_cell = None;
-        for r in board::row_indices() {
-            for c in board::col_indices() {
-                if board.get(r, c).is_none() {
-                    let count = board.candidates(r, c).len();
-                    if count > 2 {
-                        if multi_cell.is_none() {
-                            multi_cell = Some((r, c));
-                        } else {
-                            return Ok(false);
-                        }
-                    } else if count < 2 {
-                        return Ok(false);
-                    }
+        for (r, c) in board.unsolved_cells() {
+            let count = board.candidates(r, c).len();
+            if count > 2 {
+                if multi_cell.is_none() {
+                    multi_cell = Some((r, c));
+                } else {
+                    return Ok(false);
                 }
+            } else if count < 2 {
+                return Ok(false);
             }
         }
 
@@ -34,13 +30,9 @@ impl Strategy for Bug {
         };
 
         let mut digit_counts = [0usize; 10];
-        for r0 in board::row_indices() {
-            for c0 in board::col_indices() {
-                if board.get(r0, c0).is_none() {
-                    for d in board.candidates(r0, c0) {
-                        digit_counts[d as usize] += 1;
-                    }
-                }
+        for (r0, c0) in board.unsolved_cells() {
+            for d in board.candidates(r0, c0) {
+                digit_counts[d as usize] += 1;
             }
         }
 

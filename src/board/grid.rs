@@ -126,6 +126,11 @@ impl Board {
         (0..9).flat_map(|r| (0..9).map(move |c| (r, c)))
     }
 
+    /// Iterate over every unsolved cell on the board.
+    pub fn unsolved_cells(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
+        self.cells().filter(|&(r, c)| self.get(r, c).is_none())
+    }
+
     /// Iterate over every cell on the board in row-major order.
     ///
     /// The provided closure receives the row, column and current value

@@ -69,3 +69,12 @@ fn box_iteration_helpers() {
     board.for_each_box_digit(|_, _| combos += 1);
     assert_eq!(combos, 81);
 }
+
+#[test]
+fn unsolved_cells_iterates_only_empty() {
+    let puzzle = format!("1{}", ".".repeat(80));
+    let board = Board::parse(&puzzle).unwrap();
+    let coords: Vec<_> = board.unsolved_cells().collect();
+    assert_eq!(coords.len(), 80);
+    assert!(!coords.contains(&(0, 0)));
+}
