@@ -1,15 +1,19 @@
-use crate::strategy::{Strategy, StrategyKind};
-use crate::board::{Board, CandidateSet, Unit};
 use crate::SolverError;
+use crate::board::{Board, CandidateSet, Unit};
+use crate::strategy::{Strategy, StrategyKind};
 
 pub struct NakedQuad;
 
 impl Strategy for NakedQuad {
-    fn kind(&self) -> StrategyKind { StrategyKind::NakedQuad }
+    fn kind(&self) -> StrategyKind {
+        StrategyKind::NakedQuad
+    }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         for unit in Unit::all() {
-            if search_unit(board, unit)? { return Ok(true); }
+            if search_unit(board, unit)? {
+                return Ok(true);
+            }
         }
         Ok(false)
     }
@@ -21,7 +25,11 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
         for b in a + 1..cells.len() {
             for c in b + 1..cells.len() {
                 for d in c + 1..cells.len() {
-                    let union = cells[a].1.union(cells[b].1).union(cells[c].1).union(cells[d].1);
+                    let union = cells[a]
+                        .1
+                        .union(cells[b].1)
+                        .union(cells[c].1)
+                        .union(cells[d].1);
                     if union.len() == 4
                         && cells[a].1.iter().all(|v| union.contains(v))
                         && cells[b].1.iter().all(|v| union.contains(v))
@@ -39,13 +47,20 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
                                 for digit in &union {
                                     match board.eliminate_candidate(r, cidx, digit) {
                                         Some(true) => changed = true,
-                                        None => return Err(SolverError::Contradiction { row: r, col: cidx }),
+                                        None => {
+                                            return Err(SolverError::Contradiction {
+                                                row: r,
+                                                col: cidx,
+                                            });
+                                        }
                                         _ => {}
                                     }
                                 }
                             }
                         }
-                        if changed { return Ok(true); }
+                        if changed {
+                            return Ok(true);
+                        }
                     }
                 }
             }

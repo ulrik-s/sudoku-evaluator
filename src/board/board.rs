@@ -2,7 +2,7 @@
 
 use std::fmt;
 
-use super::{candidate::*, unit::*, Digit};
+use super::{Digit, candidate::*, unit::*};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Cell {
@@ -23,7 +23,9 @@ pub struct Board {
 }
 
 impl Board {
-    pub(crate) fn new(cells: [[Cell; 9]; 9]) -> Self { Self { cells } }
+    pub(crate) fn new(cells: [[Cell; 9]; 9]) -> Self {
+        Self { cells }
+    }
     pub fn get(&self, r: usize, c: usize) -> Option<Digit> {
         self.cells[r][c].value
     }
@@ -34,20 +36,32 @@ impl Board {
     }
 
     pub fn candidates(&self, r: usize, c: usize) -> CandidateSet {
-        if self.get(r, c).is_some() { return CandidateSet::empty(); }
+        if self.get(r, c).is_some() {
+            return CandidateSet::empty();
+        }
         let mut set = CandidateSet::full();
-        for d in self.row_values(r) { set.remove(d); }
-        for d in self.col_values(c) { set.remove(d); }
-        for d in self.box_values(r - r % 3, c - c % 3) { set.remove(d); }
+        for d in self.row_values(r) {
+            set.remove(d);
+        }
+        for d in self.col_values(c) {
+            set.remove(d);
+        }
+        for d in self.box_values(r - r % 3, c - c % 3) {
+            set.remove(d);
+        }
         let removed = self.cells[r][c].removed;
         for d in 1..=9 {
-            if removed & (1 << (d - 1)) != 0 { set.remove(d); }
+            if removed & (1 << (d - 1)) != 0 {
+                set.remove(d);
+            }
         }
         set
     }
 
     pub fn eliminate_candidate(&mut self, r: usize, c: usize, d: Digit) -> Option<bool> {
-        if self.get(r, c).is_some() { return Some(false); }
+        if self.get(r, c).is_some() {
+            return Some(false);
+        }
         let mask = 1 << (d - 1);
         if self.cells[r][c].removed & mask != 0 {
             return Some(false);
@@ -90,7 +104,10 @@ impl Board {
         coords
     }
 
-    pub fn unsolved_in_unit(&self, unit: Unit) -> impl Iterator<Item = ((usize, usize), CandidateSet)> + '_ {
+    pub fn unsolved_in_unit(
+        &self,
+        unit: Unit,
+    ) -> impl Iterator<Item = ((usize, usize), CandidateSet)> + '_ {
         self.unit_iter(unit)
             .filter(|&(r, c)| self.get(r, c).is_none())
             .map(|(r, c)| ((r, c), self.candidates(r, c)))
@@ -131,7 +148,10 @@ impl Board {
     }
 
     pub(crate) fn col_values(&self, c: usize) -> impl Iterator<Item = Digit> + '_ {
-        self.cells.iter().map(move |row| row[c].value).filter_map(|x| x)
+        self.cells
+            .iter()
+            .map(move |row| row[c].value)
+            .filter_map(|x| x)
     }
 
     pub(crate) fn box_values(&self, r: usize, c: usize) -> impl Iterator<Item = Digit> + '_ {
@@ -154,7 +174,7 @@ impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for r in 0..9 {
             for c in 0..9 {
-                match self.get(r,c) {
+                match self.get(r, c) {
                     Some(d) => write!(f, "{}", d)?,
                     None => write!(f, ".")?,
                 }
@@ -163,4 +183,3 @@ impl fmt::Display for Board {
         Ok(())
     }
 }
-

@@ -9,7 +9,8 @@ pub enum Unit {
 
 impl Unit {
     pub fn all() -> impl Iterator<Item = Unit> {
-        (0..9).map(Unit::Row)
+        (0..9)
+            .map(Unit::Row)
             .chain((0..9).map(Unit::Col))
             .chain((0..3).flat_map(|r| (0..3).map(move |c| Unit::Box(r * 3, c * 3))))
     }
@@ -38,4 +39,3 @@ impl Iterator for UnitIter {
         }
     }
 }
-

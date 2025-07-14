@@ -1,5 +1,5 @@
-use sudoku_evaluator::{board::Board, Solver};
 use std::io::{self, Read};
+use sudoku_evaluator::{Solver, board::Board};
 
 fn main() {
     let mut input = String::new();

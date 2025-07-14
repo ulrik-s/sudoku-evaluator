@@ -1,11 +1,13 @@
-use crate::strategy::{Strategy, StrategyKind};
-use crate::board::Board;
 use crate::SolverError;
+use crate::board::Board;
+use crate::strategy::{Strategy, StrategyKind};
 
 pub struct PointingPair;
 
 impl Strategy for PointingPair {
-    fn kind(&self) -> StrategyKind { StrategyKind::PointingPair }
+    fn kind(&self) -> StrategyKind {
+        StrategyKind::PointingPair
+    }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         for br in 0..3 {
@@ -29,12 +31,16 @@ impl Strategy for PointingPair {
                                 if c < bc * 3 || c >= bc * 3 + 3 {
                                     match board.eliminate_candidate(row, c, digit) {
                                         Some(true) => changed = true,
-                                        None => return Err(SolverError::Contradiction { row, col: c }),
+                                        None => {
+                                            return Err(SolverError::Contradiction { row, col: c });
+                                        }
                                         _ => {}
                                     }
                                 }
                             }
-                            if changed { return Ok(true); }
+                            if changed {
+                                return Ok(true);
+                            }
                         }
                         if same_col {
                             let col = positions[0].1;
@@ -43,12 +49,16 @@ impl Strategy for PointingPair {
                                 if r < br * 3 || r >= br * 3 + 3 {
                                     match board.eliminate_candidate(r, col, digit) {
                                         Some(true) => changed = true,
-                                        None => return Err(SolverError::Contradiction { row: r, col }),
+                                        None => {
+                                            return Err(SolverError::Contradiction { row: r, col });
+                                        }
                                         _ => {}
                                     }
                                 }
                             }
-                            if changed { return Ok(true); }
+                            if changed {
+                                return Ok(true);
+                            }
                         }
                     }
                 }

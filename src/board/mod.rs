@@ -37,13 +37,13 @@ pub fn col_pairs() -> impl Iterator<Item = (usize, usize)> {
     col_indices().flat_map(|c1| col_indices().skip(c1 + 1).map(move |c2| (c1, c2)))
 }
 
-mod candidate;
 mod board;
+mod candidate;
 mod parser;
 mod unit;
 
-pub use candidate::*;
 pub use board::Board;
+pub use candidate::*;
 pub use parser::BoardError;
 pub use unit::{Unit, UnitIter};
 
@@ -62,9 +62,9 @@ mod tests {
     fn candidates_basic() {
         let puzzle = format!("1{}", ".".repeat(80));
         let mut board = Board::from_str(&puzzle).unwrap();
-        let cands = board.candidates(0,1);
-        assert_eq!(cands, vec![2,3,4,5,6,7,8,9]);
-        board.set(0,1,2);
-        assert!(board.candidates(0,1).is_empty());
+        let cands = board.candidates(0, 1);
+        assert_eq!(cands, vec![2, 3, 4, 5, 6, 7, 8, 9]);
+        board.set(0, 1, 2);
+        assert!(board.candidates(0, 1).is_empty());
     }
 }

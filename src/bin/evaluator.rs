@@ -1,19 +1,35 @@
-use sudoku_evaluator::{board::Board, strategy::{StrategyKind, Strategy}, Solver};
 use std::env;
 use std::io::{self, Read};
+use sudoku_evaluator::{
+    Solver,
+    board::Board,
+    strategy::{Strategy, StrategyKind},
+};
 
 fn kind_to_strategy(kind: StrategyKind) -> Box<dyn Strategy> {
     match kind {
-        StrategyKind::SingleCandidate => Box::new(sudoku_evaluator::strategy::single_candidate::SingleCandidate),
-        StrategyKind::HiddenSingle => Box::new(sudoku_evaluator::strategy::hidden_single::HiddenSingle),
+        StrategyKind::SingleCandidate => {
+            Box::new(sudoku_evaluator::strategy::single_candidate::SingleCandidate)
+        }
+        StrategyKind::HiddenSingle => {
+            Box::new(sudoku_evaluator::strategy::hidden_single::HiddenSingle)
+        }
         StrategyKind::NakedPair => Box::new(sudoku_evaluator::strategy::naked_pair::NakedPair),
-        StrategyKind::NakedTriple => Box::new(sudoku_evaluator::strategy::naked_triple::NakedTriple),
+        StrategyKind::NakedTriple => {
+            Box::new(sudoku_evaluator::strategy::naked_triple::NakedTriple)
+        }
         StrategyKind::NakedQuad => Box::new(sudoku_evaluator::strategy::naked_quad::NakedQuad),
         StrategyKind::HiddenPair => Box::new(sudoku_evaluator::strategy::hidden_pair::HiddenPair),
-        StrategyKind::HiddenTriple => Box::new(sudoku_evaluator::strategy::hidden_triple::HiddenTriple),
+        StrategyKind::HiddenTriple => {
+            Box::new(sudoku_evaluator::strategy::hidden_triple::HiddenTriple)
+        }
         StrategyKind::HiddenQuad => Box::new(sudoku_evaluator::strategy::hidden_quad::HiddenQuad),
-        StrategyKind::PointingPair => Box::new(sudoku_evaluator::strategy::pointing_pair::PointingPair),
-        StrategyKind::BoxLineReduction => Box::new(sudoku_evaluator::strategy::box_line_reduction::BoxLineReduction),
+        StrategyKind::PointingPair => {
+            Box::new(sudoku_evaluator::strategy::pointing_pair::PointingPair)
+        }
+        StrategyKind::BoxLineReduction => {
+            Box::new(sudoku_evaluator::strategy::box_line_reduction::BoxLineReduction)
+        }
         StrategyKind::XWing => Box::new(sudoku_evaluator::strategy::x_wing::XWing),
         StrategyKind::YWing => Box::new(sudoku_evaluator::strategy::y_wing::YWing),
     }
@@ -60,7 +76,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 continue;
             }
         }
-        let strategies: Vec<Box<dyn Strategy>> = kinds.iter().map(|&k| kind_to_strategy(k)).collect();
+        let strategies: Vec<Box<dyn Strategy>> =
+            kinds.iter().map(|&k| kind_to_strategy(k)).collect();
         let solver = Solver::new(strategies);
         let mut board = base_board.clone();
         if solver.solve(&mut board).is_ok() {
@@ -77,4 +94,3 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-

@@ -1,11 +1,13 @@
-use crate::strategy::{Strategy, StrategyKind};
-use crate::board::Board;
 use crate::SolverError;
+use crate::board::Board;
+use crate::strategy::{Strategy, StrategyKind};
 
 pub struct BoxLineReduction;
 
 impl Strategy for BoxLineReduction {
-    fn kind(&self) -> StrategyKind { StrategyKind::BoxLineReduction }
+    fn kind(&self) -> StrategyKind {
+        StrategyKind::BoxLineReduction
+    }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         for br in 0..3 {
@@ -19,7 +21,9 @@ impl Strategy for BoxLineReduction {
                             }
                         }
                     }
-                    if positions.len() <= 1 { continue; }
+                    if positions.len() <= 1 {
+                        continue;
+                    }
                     let same_row = positions.iter().all(|&(r, _)| r == positions[0].0);
                     let same_col = positions.iter().all(|&(_, c)| c == positions[0].1);
                     if same_row {
@@ -34,7 +38,9 @@ impl Strategy for BoxLineReduction {
                                 }
                             }
                         }
-                        if changed { return Ok(true); }
+                        if changed {
+                            return Ok(true);
+                        }
                     }
                     if same_col {
                         let col = positions[0].1;
@@ -48,7 +54,9 @@ impl Strategy for BoxLineReduction {
                                 }
                             }
                         }
-                        if changed { return Ok(true); }
+                        if changed {
+                            return Ok(true);
+                        }
                     }
                 }
             }
@@ -56,4 +64,3 @@ impl Strategy for BoxLineReduction {
         Ok(false)
     }
 }
-

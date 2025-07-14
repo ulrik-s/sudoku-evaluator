@@ -1,4 +1,4 @@
-use super::{board::Board, Digit};
+use super::{Digit, board::Board};
 use std::fmt;
 
 /// Errors that can occur while parsing a puzzle string into a [`Board`].
@@ -14,7 +14,9 @@ impl fmt::Display for BoardError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             BoardError::InvalidLength(len) => write!(f, "expected 81 chars, got {}", len),
-            BoardError::InvalidChar(ch, idx) => write!(f, "invalid char '{}' at position {}", ch, idx),
+            BoardError::InvalidChar(ch, idx) => {
+                write!(f, "invalid char '{}' at position {}", ch, idx)
+            }
         }
     }
 }
@@ -41,15 +43,14 @@ impl Board {
     }
 
     pub fn is_valid(&self) -> bool {
-        (0..9).all(|r| Board::unique(self.row_values(r))) &&
-        (0..9).all(|c| Board::unique(self.col_values(c))) &&
-        (0..3)
-            .flat_map(|br| (0..3).map(move |bc| (br*3, bc*3)))
-            .all(|(r,c)| Board::unique(self.box_values(r,c)))
+        (0..9).all(|r| Board::unique(self.row_values(r)))
+            && (0..9).all(|c| Board::unique(self.col_values(c)))
+            && (0..3)
+                .flat_map(|br| (0..3).map(move |bc| (br * 3, bc * 3)))
+                .all(|(r, c)| Board::unique(self.box_values(r, c)))
     }
 
     pub fn is_solved(&self) -> bool {
-        self.cells().all(|(r,c)| self.get(r,c).is_some()) && self.is_valid()
+        self.cells().all(|(r, c)| self.get(r, c).is_some()) && self.is_valid()
     }
 }
-

@@ -1,11 +1,13 @@
-use crate::strategy::{Strategy, StrategyKind};
-use crate::board::{Board, CandidateSet, Unit};
 use crate::SolverError;
+use crate::board::{Board, CandidateSet, Unit};
+use crate::strategy::{Strategy, StrategyKind};
 
 pub struct NakedPair;
 
 impl Strategy for NakedPair {
-    fn kind(&self) -> StrategyKind { StrategyKind::NakedPair }
+    fn kind(&self) -> StrategyKind {
+        StrategyKind::NakedPair
+    }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         for unit in Unit::all() {
@@ -36,7 +38,9 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
                             for d in &digits {
                                 match board.eliminate_candidate(rr, cc, d) {
                                     Some(true) => changed = true,
-                                    None => return Err(SolverError::Contradiction { row: rr, col: cc }),
+                                    None => {
+                                        return Err(SolverError::Contradiction { row: rr, col: cc });
+                                    }
                                     _ => {}
                                 }
                             }
@@ -51,4 +55,3 @@ fn search_unit(board: &mut Board, unit: Unit) -> Result<bool, SolverError> {
     }
     Ok(false)
 }
-

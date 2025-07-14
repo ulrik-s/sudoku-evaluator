@@ -9,8 +9,8 @@ pub use board::BoardError;
 pub mod strategy;
 
 use board::Board;
-use strategy::{Strategy, StrategyKind};
 use std::error::Error;
+use strategy::{Strategy, StrategyKind};
 
 /// Errors that can occur while solving a puzzle.
 #[derive(Debug)]
@@ -26,9 +26,13 @@ pub enum SolverError {
 impl std::fmt::Display for SolverError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SolverError::Contradiction { row, col } => write!(f, "contradiction at ({}, {})", row, col),
+            SolverError::Contradiction { row, col } => {
+                write!(f, "contradiction at ({}, {})", row, col)
+            }
             SolverError::InvalidBoard => write!(f, "board is invalid"),
-            SolverError::Unsolvable => write!(f, "puzzle cannot be solved with available strategies"),
+            SolverError::Unsolvable => {
+                write!(f, "puzzle cannot be solved with available strategies")
+            }
         }
     }
 }
@@ -89,4 +93,3 @@ impl Solver {
         }
     }
 }
-

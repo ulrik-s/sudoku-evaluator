@@ -1,11 +1,13 @@
-use crate::strategy::{Strategy, StrategyKind};
-use crate::board::{Board, Unit};
 use crate::SolverError;
+use crate::board::{Board, Unit};
+use crate::strategy::{Strategy, StrategyKind};
 
 pub struct HiddenPair;
 
 impl Strategy for HiddenPair {
-    fn kind(&self) -> StrategyKind { StrategyKind::HiddenPair }
+    fn kind(&self) -> StrategyKind {
+        StrategyKind::HiddenPair
+    }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
         for unit in Unit::all() {
@@ -30,7 +32,8 @@ fn find_hidden_pair_unit(board: &mut Board, unit: Unit) -> Result<Option<bool>, 
     }
     for d1 in 1..=8 {
         for d2 in d1 + 1..=9 {
-            if positions[d1 as usize].len() == 2 && positions[d1 as usize] == positions[d2 as usize] {
+            if positions[d1 as usize].len() == 2 && positions[d1 as usize] == positions[d2 as usize]
+            {
                 let mut changed = false;
                 for &(r, c) in &positions[d1 as usize] {
                     for d in 1..=9 {
@@ -43,7 +46,9 @@ fn find_hidden_pair_unit(board: &mut Board, unit: Unit) -> Result<Option<bool>, 
                         }
                     }
                 }
-                if changed { return Ok(Some(true)); }
+                if changed {
+                    return Ok(Some(true));
+                }
             }
         }
     }
