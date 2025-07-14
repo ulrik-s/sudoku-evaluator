@@ -59,8 +59,10 @@ impl Strategy for SimpleColoring {
                     let color = *component.get(&(cr, cc)).unwrap();
                     if let Some(neigh) = adjacency.get(&(cr, cc)) {
                         for &(nr, nc) in neigh {
-                            if !component.contains_key(&(nr, nc)) {
-                                component.insert((nr, nc), !color);
+                            if let std::collections::hash_map::Entry::Vacant(e) =
+                                component.entry((nr, nc))
+                            {
+                                e.insert(!color);
                                 visited.insert((nr, nc));
                                 queue.push_back((nr, nc));
                             }
@@ -92,9 +94,8 @@ impl Strategy for SimpleColoring {
                     if invalid[color as usize] {
                         for &(cr, cc) in &color_sets[color as usize] {
                             if let Some(res) = board.eliminate_candidate(cr, cc, digit) {
-                                match res {
-                                    true => changed = true,
-                                    false => (),
+                                if res {
+                                    changed = true;
                                 }
                             } else {
                                 return Err(SolverError::Contradiction { row: cr, col: cc });

@@ -46,9 +46,8 @@ impl Strategy for UniqueRectangle {
                                 for d in cands.iter() {
                                     if d != a && d != b {
                                         if let Some(res) = board.eliminate_candidate(er, ec, d) {
-                                            match res {
-                                                true => changed = true,
-                                                false => {}
+                                            if res {
+                                                changed = true;
                                             }
                                         } else {
                                             return Err(SolverError::Contradiction {

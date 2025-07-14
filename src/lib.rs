@@ -6,7 +6,9 @@
 
 pub mod board;
 pub use board::BoardError;
+pub mod progressive;
 pub mod strategy;
+pub use progressive::ProgressiveSolver;
 
 use board::Board;
 use std::error::Error;
@@ -102,7 +104,7 @@ impl Solver {
         ])
     }
 
-    pub fn solve(&self, board: &mut Board) -> Result<Vec<StrategyKind>, SolverError> {
+    fn apply_strategies(&self, board: &mut Board) -> Result<Vec<StrategyKind>, SolverError> {
         if !board.is_valid() {
             return Err(SolverError::InvalidBoard);
         }
@@ -123,11 +125,22 @@ impl Solver {
                 break;
             }
         }
+        Ok(used)
+    }
+
+    /// Attempt to fully solve the board.
+    pub fn solve(&self, board: &mut Board) -> Result<Vec<StrategyKind>, SolverError> {
+        let used = self.apply_strategies(board)?;
         if board.is_solved() {
             Ok(used)
         } else {
             Err(SolverError::Unsolvable)
         }
+    }
+
+    /// Apply strategies until no further progress can be made.
+    pub fn reduce(&self, board: &mut Board) -> Result<Vec<StrategyKind>, SolverError> {
+        self.apply_strategies(board)
     }
 }
 
