@@ -37,13 +37,19 @@ pub fn col_pairs() -> impl Iterator<Item = (usize, usize)> {
     col_indices().flat_map(|c1| col_indices().skip(c1 + 1).map(move |c2| (c1, c2)))
 }
 
-mod board;
+/// Iterator over the starting coordinates of every box.
+pub fn box_indices() -> impl Iterator<Item = (usize, usize)> {
+    (0..BOARD_SIZE / BOX_SIZE)
+        .flat_map(|r| (0..BOARD_SIZE / BOX_SIZE).map(move |c| (r * BOX_SIZE, c * BOX_SIZE)))
+}
+
 mod candidate;
+mod grid;
 mod parser;
 mod unit;
 
-pub use board::Board;
 pub use candidate::*;
+pub use grid::Board;
 pub use parser::BoardError;
 pub use unit::{Unit, UnitIter};
 
@@ -54,14 +60,14 @@ mod tests {
     #[test]
     fn parse_and_display() {
         let puzzle = format!("1{}", ".".repeat(80));
-        let board = Board::from_str(&puzzle).unwrap();
+        let board = Board::parse(&puzzle).unwrap();
         assert_eq!(format!("{}", board), puzzle);
     }
 
     #[test]
     fn candidates_basic() {
         let puzzle = format!("1{}", ".".repeat(80));
-        let mut board = Board::from_str(&puzzle).unwrap();
+        let mut board = Board::parse(&puzzle).unwrap();
         let cands = board.candidates(0, 1);
         assert_eq!(cands, vec![2, 3, 4, 5, 6, 7, 8, 9]);
         board.set(0, 1, 2);

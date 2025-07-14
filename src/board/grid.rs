@@ -126,6 +126,127 @@ impl Board {
         (0..9).flat_map(|r| (0..9).map(move |c| (r, c)))
     }
 
+    /// Iterate over every cell on the board in row-major order.
+    ///
+    /// The provided closure receives the row, column and current value
+    /// of the cell. It is similar to calling `map` on the coordinates
+    /// iterator but avoids repeating the looping logic in each strategy.
+    pub fn for_each_cell<F>(&self, mut f: F)
+    where
+        F: FnMut(usize, usize, Option<Digit>),
+    {
+        for r in 0..9 {
+            for c in 0..9 {
+                f(r, c, self.get(r, c));
+            }
+        }
+    }
+
+    /// Mutable variant of [`for_each_cell`] that allows the closure to
+    /// return a `Result`. Returning `Ok(true)` from the closure stops the
+    /// iteration early and causes this function to return `Ok(true)`.
+    pub fn try_for_each_cell_mut<F, E>(&mut self, mut f: F) -> Result<bool, E>
+    where
+        F: FnMut(&mut Board, usize, usize) -> Result<bool, E>,
+    {
+        for r in 0..9 {
+            for c in 0..9 {
+                if f(self, r, c)? {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
+    }
+
+    /// Iterate over every cell on the board and allow the closure to
+    /// return a `Result`. Returning `Ok(true)` stops the iteration early.
+    pub fn try_for_each_cell<F, E>(&self, mut f: F) -> Result<bool, E>
+    where
+        F: FnMut(usize, usize, Option<Digit>) -> Result<bool, E>,
+    {
+        for r in 0..9 {
+            for c in 0..9 {
+                if f(r, c, self.get(r, c))? {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
+    }
+
+    /// Mutable iteration without early exit for each cell.
+    pub fn for_each_cell_mut<F>(&mut self, mut f: F)
+    where
+        F: FnMut(&mut Board, usize, usize),
+    {
+        for r in 0..9 {
+            for c in 0..9 {
+                f(self, r, c);
+            }
+        }
+    }
+
+    /// Iterate over a specific unit and run a closure on each cell.
+    pub fn for_each_in_unit<F>(&self, unit: Unit, mut f: F)
+    where
+        F: FnMut(usize, usize, Option<Digit>),
+    {
+        for (r, c) in self.unit_iter(unit) {
+            f(r, c, self.get(r, c));
+        }
+    }
+
+    /// Mutable variant of [`for_each_in_unit`] that allows early exit.
+    pub fn try_for_each_in_unit_mut<F, E>(&mut self, unit: Unit, mut f: F) -> Result<bool, E>
+    where
+        F: FnMut(&mut Board, usize, usize) -> Result<bool, E>,
+    {
+        for (r, c) in self.unit_iter(unit) {
+            if f(self, r, c)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
+    /// Iterate over every box and invoke the closure with the box unit.
+    pub fn for_each_box<F>(&self, mut f: F)
+    where
+        F: FnMut(Unit),
+    {
+        for (r, c) in super::box_indices() {
+            f(Unit::Box(r, c));
+        }
+    }
+
+    /// Iterate over every box and digit combination.
+    pub fn for_each_box_digit<F>(&self, mut f: F)
+    where
+        F: FnMut(Unit, Digit),
+    {
+        for (r, c) in super::box_indices() {
+            for digit in super::digits() {
+                f(Unit::Box(r, c), digit);
+            }
+        }
+    }
+
+    /// Mutable variant of [`for_each_box_digit`] with early exit.
+    pub fn try_for_each_box_digit_mut<F, E>(&mut self, mut f: F) -> Result<bool, E>
+    where
+        F: FnMut(&mut Board, Unit, Digit) -> Result<bool, E>,
+    {
+        for (r, c) in super::box_indices() {
+            for digit in super::digits() {
+                if f(self, Unit::Box(r, c), digit)? {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
+    }
+
     pub fn peer_coords(&self, r: usize, c: usize) -> Vec<(usize, usize)> {
         use std::collections::HashSet;
         let br = r / 3 * 3;
@@ -148,10 +269,7 @@ impl Board {
     }
 
     pub(crate) fn col_values(&self, c: usize) -> impl Iterator<Item = Digit> + '_ {
-        self.cells
-            .iter()
-            .map(move |row| row[c].value)
-            .filter_map(|x| x)
+        self.cells.iter().filter_map(move |row| row[c].value)
     }
 
     pub(crate) fn box_values(&self, r: usize, c: usize) -> impl Iterator<Item = Digit> + '_ {

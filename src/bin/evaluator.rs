@@ -60,7 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         buf
     };
     let puzzle: String = input.chars().filter(|c| !c.is_whitespace()).collect();
-    let base_board = Board::from_str(&puzzle)?;
+    let base_board = Board::parse(&puzzle)?;
 
     let mut best: Option<(Vec<StrategyKind>, Board)> = None;
 

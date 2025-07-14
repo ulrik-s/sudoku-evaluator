@@ -6,12 +6,22 @@ This crate provides a simple Sudoku solver that records which solving strategies
 use sudoku_evaluator::{board::Board, Solver};
 
 let puzzle = "53467891267219534819834256785976142342685379171392485696153728428741963534528617.";
-let mut board = Board::from_str(puzzle).unwrap();
+let mut board = Board::parse(puzzle).unwrap();
 let solver = Solver::default();
 let used = solver.solve(&mut board).unwrap();
 assert!(board.is_solved());
 println!("Strategies used: {:?}", used);
 ```
+
+### Command line usage
+
+Build and run the `solve` binary to solve a puzzle from the command line:
+
+```
+cargo run --bin solve -- "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+```
+
+The program prints the strategies that were required and the solved board.
 
 Run tests with `cargo test`.
 

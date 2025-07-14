@@ -53,7 +53,7 @@ impl Strategy for YWing {
                             cand2
                                 .iter()
                                 .find(|&d| d != d2)
-                                .and_then(|o2| (o2 == other).then(|| (r2, c2)))
+                                .and_then(|o2| (o2 == other).then_some((r2, c2)))
                         })
                         .collect();
 

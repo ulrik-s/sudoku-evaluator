@@ -48,21 +48,8 @@ impl Solver {
         Self { strategies }
     }
 
-    pub fn default() -> Self {
-        Self::new(vec![
-            Box::new(strategy::single_candidate::SingleCandidate),
-            Box::new(strategy::hidden_single::HiddenSingle),
-            Box::new(strategy::naked_pair::NakedPair),
-            Box::new(strategy::naked_triple::NakedTriple),
-            Box::new(strategy::naked_quad::NakedQuad),
-            Box::new(strategy::hidden_pair::HiddenPair),
-            Box::new(strategy::hidden_triple::HiddenTriple),
-            Box::new(strategy::hidden_quad::HiddenQuad),
-            Box::new(strategy::pointing_pair::PointingPair),
-            Box::new(strategy::box_line_reduction::BoxLineReduction),
-            Box::new(strategy::x_wing::XWing),
-            Box::new(strategy::y_wing::YWing),
-        ])
+    pub fn with_default_strategies() -> Self {
+        Self::default()
     }
 
     pub fn solve(&self, board: &mut Board) -> Result<Vec<StrategyKind>, SolverError> {
@@ -91,5 +78,24 @@ impl Solver {
         } else {
             Err(SolverError::Unsolvable)
         }
+    }
+}
+
+impl Default for Solver {
+    fn default() -> Self {
+        Self::new(vec![
+            Box::new(strategy::single_candidate::SingleCandidate),
+            Box::new(strategy::hidden_single::HiddenSingle),
+            Box::new(strategy::naked_pair::NakedPair),
+            Box::new(strategy::naked_triple::NakedTriple),
+            Box::new(strategy::naked_quad::NakedQuad),
+            Box::new(strategy::hidden_pair::HiddenPair),
+            Box::new(strategy::hidden_triple::HiddenTriple),
+            Box::new(strategy::hidden_quad::HiddenQuad),
+            Box::new(strategy::pointing_pair::PointingPair),
+            Box::new(strategy::box_line_reduction::BoxLineReduction),
+            Box::new(strategy::x_wing::XWing),
+            Box::new(strategy::y_wing::YWing),
+        ])
     }
 }

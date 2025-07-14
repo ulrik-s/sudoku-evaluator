@@ -1,5 +1,5 @@
 use crate::SolverError;
-use crate::board::Board;
+use crate::board::{Board, Digit};
 use crate::strategy::{Strategy, StrategyKind};
 
 pub struct SingleCandidate;
@@ -10,16 +10,22 @@ impl Strategy for SingleCandidate {
     }
 
     fn apply(&self, board: &mut Board) -> Result<bool, SolverError> {
-        for r in 0..9 {
-            for c in 0..9 {
-                let cand = board.candidates(r, c);
-                if cand.len() == 1 {
-                    let digit = cand.into_iter().next().unwrap();
-                    board.set(r, c, digit);
-                    return Ok(true);
-                }
+        let mut res: Option<(usize, usize, Digit)> = None;
+        board.try_for_each_cell_mut(|b, r, c| {
+            let cand = b.candidates(r, c);
+            if cand.len() == 1 {
+                let digit = cand.into_iter().next().unwrap();
+                res = Some((r, c, digit));
+                Ok(true)
+            } else {
+                Ok(false)
             }
+        })?;
+        if let Some((r, c, d)) = res {
+            board.set(r, c, d);
+            Ok(true)
+        } else {
+            Ok(false)
         }
-        Ok(false)
     }
 }
